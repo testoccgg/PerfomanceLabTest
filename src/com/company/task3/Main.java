@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // реализация без библиотеки json парсинга values , работа с шаблоном уже с помощью simple json
+        // реализация без библиотеки json
 
 //        String PatternReportJSONPath="src/com/company/task3/tests.json";
 //        String valuesJSONPath="src/com/company/task3/values.json";
@@ -35,12 +35,6 @@ public class Main {
         newPath=newPath.replaceAll(new File(args[0]).getName(),"");
         newPath=newPath+"report.json";
         reporterJson.writeToFile(JSONreport,newPath);
-
-
-
-
-
-
 
 
     }

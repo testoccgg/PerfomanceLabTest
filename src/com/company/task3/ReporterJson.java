@@ -26,10 +26,6 @@ public class ReporterJson {
     }
 
 
-
-
-
-
     public void  loadValues(String PatternReportJSON){
         ArrayList<Node> nodesList =  ParseDOMStructure(PatternReportJSON);
         valuesNodes=nodesList;
