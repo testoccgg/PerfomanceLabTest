@@ -398,7 +398,7 @@ public class ReporterJson {
     }
 
 
-    public void showReport() {
+    public String generateJSONReport() {
 
         String json=  this.parseStringFromFile(new File(this.PathReportPath));
 
@@ -409,14 +409,86 @@ public class ReporterJson {
         ArrayList<String> toEdit=new ArrayList();
         while (matcher.find()){
             String line=matcher.group();
+            if (line.split("id").length>2){
+                while (line.indexOf("id")>-1){
+
+
+                            String first=   getSubstringByREGex("(?=\"id)(.*)(?=\"id\")",line);
+                            if (first.length()==0) first=line;
+                            if (first.indexOf("value\"")>-1)   toEdit.add(line);
+                          int from=line.indexOf(first);
+                          int to=from+first.length();
+                          line=line.substring(0,from)+
+                                  line.substring(to,line.length());
+
+
+                }
+            }
             toEdit.add(line);
         }
 
         for (Node valuesNode : this.valuesNodes) {
-            String findID= valuesNode.JSONid;
+            String id_Need_ADD_Val= valuesNode.JSONid;
+            String valToAdd=valuesNode.JSONvalue;
             for (String editLine : toEdit) {
-                if (editLine.indexOf("id\":"+findID)>-1){
-                    String newLine=editLine.replaceAll("value\":\"","value\":\""+valuesNode.JSONvalue);
+                if (editLine.indexOf("id\":"+id_Need_ADD_Val)>-1){
+
+                    String newLine=editLine.replaceAll("\"value\":\"\"","\"value\":\""+valToAdd+"\"");
+
+
+
+//                    editLine=editLine.replaceAll("\\[","\\\\[");
+                   try {
+                       json= json.replaceAll(editLine,newLine);
+                   }catch (Exception p){
+                       ErrorCritical("",p);
+                   }
+
+//                    Matcher matcherInt= Pattern.compile("\"[^,\\{\\}]+\":\\d+").matcher(editLine);
+//                    while (matcherInt.find()){
+//                        String parse = matcherInt.group();
+//                       println(1);
+//                        jsonCODE=jsonCODE.replaceAll(parse,"");
+//                        parse = parse.replaceAll("\"", "");
+//                        String[] chainTWO = parse.split(":");
+//                        node.addJSONattributes(chainTWO[0], chainTWO[1]);
+                    }
+
+                }
+            }
+
+        //валидайт json?
+        return json;
+        }
+
+    private String getSubstringByREGex(String regex, String string) {
+
+        Matcher matcher= Pattern.compile(regex).matcher(string);
+        while (matcher.find()){
+            String result=matcher.group();
+            return result;
+        }
+
+        ErrorCritical("Неправильо getSubstringByREGex",null);
+        return "";
+    }
+
+    public void writeToFile(String jsoNreport, String Path) {
+
+        try {
+                 FileWriter writer3 = new FileWriter(Path, false);
+
+            writer3.write(jsoNreport);
+            writer3.flush();
+            writer3.close();
+        } catch (Exception e) {
+            ErrorCritical("",e);
+        }
+
+    }
+
+        /*
+               String newLine=editLine.replaceAll("value\":\"","value\":\""+valuesNode.JSONvalue);
                 try {
                     editLine=editLine.replaceAll("\"\"","\"");
                     json=json.replaceAll(editLine,newLine);
@@ -426,9 +498,7 @@ public class ReporterJson {
                 }
 
 
-                }
-            }
-        }
+         */
 
     }
     /*
@@ -454,4 +524,4 @@ public class ReporterJson {
     }
 
      */
-}
+

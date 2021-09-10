@@ -29,7 +29,14 @@ public class Main {
         ReporterJson reporterJson=new ReporterJson(PatternReportJSONPath);
         reporterJson.loadValues(ValuesJSON);
 
-        reporterJson.showReport();
+        String JSONreport= reporterJson.generateJSONReport();
+
+        String newPath=new File(args[0]).getAbsolutePath();
+        newPath=newPath.replaceAll(new File(args[0]).getName(),"");
+        newPath=newPath+"report.json";
+        reporterJson.writeToFile(JSONreport,newPath);
+
+
 
 
 
